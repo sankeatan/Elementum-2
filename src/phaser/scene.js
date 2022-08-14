@@ -1,5 +1,5 @@
 import Phaser from "phaser";
-import logoImg from "../assets/logo.png";
+import cards_png from "../assets/cards.png"
 
 class playGame extends Phaser.Scene {
   constructor() {
@@ -7,16 +7,23 @@ class playGame extends Phaser.Scene {
   }
 
   preload() {
-    this.load.image("logo", logoImg);
+    this.load.image("cards", cards_png);
     this.dragOffset = {x: 0, y: 0};
   }
 
   create() {
-    this.add.image(
-      this.game.config.width * .5,
-      this.game.config.height * .5,
-      "dot"
-    ).setInteractive();
+    for(let col=0; col<3; col++) {
+      let x = (705 / 3) * col;
+      for(let row=0; row<2; row++) {
+        let y = (650 / 2) * row;
+        this.add.tileSprite(this.game.config.width/2, this.game.config.height/2, 705/3, 650/2, "cards").setTilePosition(x, y).setInteractive();
+      }
+    }
+    // this.add.image(
+    //   this.game.config.width * .5,
+    //   this.game.config.height * .5,
+    //   "cards"
+    // ).setInteractive();
     this.input.on('pointerdown', this.startDrag, this);
   }
 

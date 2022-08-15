@@ -35,30 +35,30 @@ class playGame extends Phaser.Scene {
     //   "cards"
     // ).setInteractive();
     this.input.on('pointerdown', this.startDrag, this);
+    this.input.on('pointerup', this.stopDrag);
   }
 
-  startDrag(pointer, targets) {
-    this.input.off('pointerdown', this.startDrag, this);
-    this.dragObj = targets[0];
-    if(this.dragObj) {
+  startDrag = (pointer, targets) => {
+    if(!this.dragObj && (this.dragObj = targets[0])) {
+      this.input.on('pointermove', this.doDrag, this);
       this.dragOffset.x = this.dragObj.x - pointer.x;
       this.dragOffset.y = this.dragObj.y - pointer.y;
-      this.input.on('pointermove', this.doDrag, this);
-      this.input.on('pointerup', this.stopDrag, this);
     }
   }
 
-  doDrag(pointer) {
-    this.dragObj.x = pointer.x + this.dragOffset.x;
-    this.dragObj.y = pointer.y + this.dragOffset.y;
+  doDrag = (pointer) => {
+    if(this.dragObj) {
+      this.dragObj.x = pointer.x + this.dragOffset.x;
+      this.dragObj.y = pointer.y + this.dragOffset.y;
+    }
   }
 
-  stopDrag() {
-    this.input.on('pointerdown', this.startDrag, this);
+  stopDrag = () => {
     this.input.off('pointermove', this.doDrag, this);
+    this.dragObj = undefined;
   }
 
-  update() {
+  update = () => {
     if(this.dragObj) {
       this.dragObj.setRotation(this.dragObj.rotation + Math.PI * 0.01);
     }

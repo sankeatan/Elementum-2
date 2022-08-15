@@ -12,11 +12,21 @@ class playGame extends Phaser.Scene {
   }
 
   create() {
+    let rot_start = -Math.PI / 4;
+    let rot_end = Math.PI / 4;
     for(let col=0; col<3; col++) {
       let x = (705 / 3) * col;
       for(let row=0; row<2; row++) {
         let y = (650 / 2) * row;
-        this.add.tileSprite(this.game.config.width/2, this.game.config.height/2, 705/3, 650/2, "cards").setTilePosition(x, y).setInteractive();
+        let rot = rot_start + (col + 3 * row) * (rot_end - rot_start) / 5;
+        let x_off = 150 * Math.cos(rot - Math.PI/2);
+        let y_off = 200 + 150 * Math.sin(rot - Math.PI/2);
+        this.add.tileSprite(x_off + this.game.config.width/2, y_off + this.game.config.height/2, 705/3, 650/2, "cards")
+          .setTilePosition(x, y)
+          .setScale(0.5)
+          .setRotation(rot)
+          .setInteractive()
+          .depth = x_off;
       }
     }
     // this.add.image(
@@ -46,7 +56,12 @@ class playGame extends Phaser.Scene {
   stopDrag() {
     this.input.on('pointerdown', this.startDrag, this);
     this.input.off('pointermove', this.doDrag, this);
-    this.input.off('pointerup', this.stopDrag, this);
+  }
+
+  update() {
+    if(this.dragObj) {
+      this.dragObj.setRotation(this.dragObj.rotation + Math.PI * 0.01);
+    }
   }
 }
 

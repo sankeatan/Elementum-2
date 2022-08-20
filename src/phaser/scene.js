@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import cards_png from "../assets/cards.png"
+import { setupCardSlots } from "./setup";
 
 class playGame extends Phaser.Scene {
   constructor() {
@@ -21,14 +22,15 @@ class playGame extends Phaser.Scene {
         let rot = rot_start + (col + 3 * row) * (rot_end - rot_start) / 5;
         let x_off = 150 * Math.cos(rot - Math.PI/2);
         let y_off = 200 + 150 * Math.sin(rot - Math.PI/2);
-        this.add.tileSprite(x_off + this.game.config.width/2, y_off + this.game.config.height/2, 705/3, 650/2, "cards")
+        let obj = this.add.tileSprite(x_off + this.game.config.width/2, y_off + this.game.config.height/2, 705/3, 650/2, "cards")
           .setTilePosition(x, y)
           .setScale(0.5)
           .setRotation(rot)
-          .setInteractive()
-          .depth = x_off;
+          .setInteractive();
+        obj.depth = x_off;
       }
     }
+    // setupCardSlots();
     // this.add.image(
     //   this.game.config.width * .5,
     //   this.game.config.height * .5,

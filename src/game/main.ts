@@ -1,11 +1,13 @@
-import Phaser from "phaser";
+import Phaser, { GameObjects } from "phaser";
 import config from "../config";
 import cards_png from "../assets/cards.png";
-import init from "./setup"
+import init from "./setup";
 
 class playGame extends Phaser.Scene {
     dragOffset: { x: number; y: number; } = { x: 0, y: 0 };
     dragObj: any;
+    // interactive objects sorted by depth. last always has depth=1000
+    depthTracker: {name: string, depth: number}[] = [];
 
     constructor() {
         super("PlayGame");
@@ -17,23 +19,7 @@ class playGame extends Phaser.Scene {
     }
 
     create() {
-        let rot_start = -Math.PI / 4;
-        let rot_end = Math.PI / 4;
-        for (let col = 0; col < 3; col++) {
-            let x = (705 / 3) * col;
-            for (let row = 0; row < 2; row++) {
-                let y = (650 / 2) * row;
-                let rot = rot_start + (col + 3 * row) * (rot_end - rot_start) / 5;
-                let x_off = 150 * Math.cos(rot - Math.PI / 2);
-                let y_off = 200 + 150 * Math.sin(rot - Math.PI / 2);
-                this.add.tileSprite(x_off + config.width / 2, y_off + config.height / 2, 705 / 3, 650 / 2, "cards")
-                    .setTilePosition(x, y)
-                    .setScale(0.5)
-                    .setRotation(rot)
-                    .setInteractive()
-                    .depth = x_off;
-            }
-        }
+
 
         init(this);
 
@@ -42,7 +28,7 @@ class playGame extends Phaser.Scene {
     }
 
     startDrag(pointer: { x: number; y: number; }, targets: any[]) {
-        this.dragObj = targets[0];
+        this.replaceDragObj(targets[0]);
         if (this.dragObj) {
             this.dragOffset.x = this.dragObj.x - pointer.x;
             this.dragOffset.y = this.dragObj.y - pointer.y;
@@ -56,9 +42,34 @@ class playGame extends Phaser.Scene {
     }
 
     stopDrag() {
-        console.log("test");
-        this.dragObj = null;
+        this.replaceDragObj(null);
         this.input.off('pointermove', this.doDrag, this);
+    }
+
+    replaceDragObj(newObj: any) {
+        this.dragObj = newObj;
+
+        if(newObj) {
+            let maxDepth = 1000;
+            let depthLimit = maxDepth;
+            let removeIndex = -1;
+            for(let i=this.depthTracker.length-1; i>=0; i--) {
+                if(this.depthTracker[i].name === newObj.name) {
+                    removeIndex = i;
+                }
+                else if(this.depthTracker[i].depth >= depthLimit) {
+                    depthLimit = depthLimit - 1;
+                    this.depthTracker[i].depth = depthLimit;
+                }
+            }
+
+            if(removeIndex >= 0) {
+                this.depthTracker.splice(removeIndex, 1);
+            }
+
+            newObj.depth = maxDepth;
+            this.depthTracker.push(newObj);
+        }
     }
 
     update() {

@@ -1,7 +1,7 @@
 import config from '../config';
 import props from './properties';
 
-function initCards(scene: Phaser.Scene): void {
+function _initCards(scene: Phaser.Scene): void {
     let center_x = .3 * config.width
     let center_y = 1.1 * config.height
     let radius = 0.1 * Math.sqrt(Math.pow(config.height, 2) + Math.pow(config.width, 2))
@@ -16,6 +16,27 @@ function initCards(scene: Phaser.Scene): void {
         // let card = new CardEntity(x, y, cardType as CardType, config.playerSlot)
         scene.add.rectangle(x, y, 100, 150, vals.style.fillStyle).setRotation(angle)
         angle += angle_inc
+    }
+}
+
+function initCards(scene: Phaser.Scene): void {
+    let rot_start = -Math.PI / 4;
+    let rot_end = Math.PI / 4;
+    for (let col = 0; col < 3; col++) {
+        let x = (705 / 3) * col;
+        for (let row = 0; row < 2; row++) {
+            let y = (650 / 2) * row;
+            let rot = rot_start + (col + 3 * row) * (rot_end - rot_start) / 5;
+            let x_off = 150 * Math.cos(rot - Math.PI / 2);
+            let y_off = 200 + 150 * Math.sin(rot - Math.PI / 2);
+            let card = scene.add.tileSprite(x_off + config.width / 2, y_off + config.height / 2, 705 / 3, 650 / 2, "cards")
+                .setTilePosition(x, y)
+                .setScale(0.5)
+                .setRotation(rot)
+                .setInteractive()
+            card.depth = x_off + 200;
+            card.setName(`card${col}${row}`);
+        }
     }
 }
 
@@ -57,7 +78,7 @@ function initElements(scene: Phaser.Scene) {
 }
 
 export default function init(scene: Phaser.Scene) {
-    initCards(scene)
     initCardSlots(scene)
     initElements(scene)
+    initCards(scene)
 }

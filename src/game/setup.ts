@@ -14,7 +14,7 @@ function _initCards(scene: Phaser.Scene): void {
         let x = center_x + radius * Math.cos(angle + Math.PI / 2)
         let y = center_y - radius * Math.sin(angle + Math.PI / 2)
         // let card = new CardEntity(x, y, cardType as CardType, config.playerSlot)
-        scene.add.rectangle(x, y, 100, 150, vals.style.fillStyle).setRotation(angle)
+        scene.add.rectangle(x, y, 130, 195, vals.style.fillStyle).setRotation(angle)
         angle += angle_inc
     }
 }
@@ -31,11 +31,12 @@ function initCards(scene: Phaser.Scene): void {
             let y_off = 200 + 150 * Math.sin(rot - Math.PI / 2);
             let card = scene.add.tileSprite(x_off + config.width / 2, y_off + config.height / 2, 705 / 3, 650 / 2, "cards")
                 .setTilePosition(x, y)
-                .setScale(0.5)
+                .setDisplaySize(config.height * .17 * .7159, config.height * .17)
                 .setRotation(rot)
                 .setInteractive()
             card.depth = x_off + 200;
             card.setName(`card${col}${row}`);
+            card.setData("card", {});
         }
     }
 }
@@ -50,8 +51,11 @@ function initCardSlots(scene: Phaser.Scene) {
         let xPos = xstart + (card_width + xpad) * i
         for (const offset_mult of [-1, 1]) {
             let yPos = config.height / 2 + offset_mult * (card_height + ypad) / 2
-            // let entity = new CardSlotEntity(xPos, yPos, i == 0 ? "attack1" : i == 1 ? "attack2" : "defend", offset_mult == 1 ? config.playerSlot : config.enemySlot)
-            scene.add.rectangle(xPos, yPos, card_width, card_height, offset_mult == 1 ? 0xff0000 : 0x0000ff).setRotation(offset_mult == 1 ? 0 : Math.PI)
+            let cardSlot = scene.add.rectangle(xPos, yPos, card_width, card_height, i == 2 ? 0x0000ff : 0xff0000)
+                .setRotation(offset_mult == 1 ? 0 : Math.PI)
+                .setInteractive()
+
+            cardSlot.setData("cardSlot", {"type": i == 2 ? "defend" : "attack"});
         }
     }
 }
@@ -69,7 +73,6 @@ function initElements(scene: Phaser.Scene) {
             let x = center_distance * Math.cos(-Math.PI / 2 + angle + params.rotation) + params.x
             let y = center_distance * Math.sin(-Math.PI / 2 + angle + params.rotation) + params.y
 
-            // scene.add(new ElementEntity(x, y, elementName as ElementName, params.name))
             scene.add.circle(x, y, element_radius, vals.style.fillStyle).setRotation(angle)
 
             angle += angle_increment

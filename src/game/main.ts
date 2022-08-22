@@ -19,34 +19,66 @@ class playGame extends Phaser.Scene {
     }
 
     create() {
-
-
         init(this);
 
-        this.input.on('pointerdown', this.startDrag, this);
-        this.input.on('pointerup', this.stopDrag, this);
+        this.input.on('pointerdown', this.mouseDown, this);
+        this.input.on('pointerup', this.mouseUp, this);
     }
 
-    startDrag(pointer: { x: number; y: number; }, targets: any[]) {
-        this.replaceDragObj(targets[0]);
+    mouseDown(pointer: { x: number; y: number; }, targets: any[]) {
+        let target = targets[0] || null;
+
+        if(target?.getData("card")) {
+            this.replaceDragObj(targets[0]);
+        }
+
+        if(target?.getData("cardSlot") && target.getData("occupied")) {
+            let occupiedComponent = target.getData("occupied");
+            this.replaceDragObj(occupiedComponent.card);
+            this.dragObj.setRotation(occupiedComponent.rotation);
+            target.setData("occupied", null);
+        }
+
         if (this.dragObj) {
+            this.dragObj.removeInteractive();
             this.dragOffset.x = this.dragObj.x - pointer.x;
             this.dragOffset.y = this.dragObj.y - pointer.y;
-            this.input.on('pointermove', this.doDrag, this);
+            this.input.on('pointermove', this.drag, this);
         }
     }
 
-    doDrag(pointer: { x: number; y: number; }) {
+    drag(pointer: { x: number; y: number; }) {
         this.dragObj.x = pointer.x + this.dragOffset.x;
         this.dragObj.y = pointer.y + this.dragOffset.y;
     }
 
-    stopDrag() {
+    mouseUp(pointer: { x: number; y: number; }, targets: any[]) {
+        if(this.dragObj == null) {
+            return;
+        }
+
+        if(this.dragObj.getData("card")) {
+            let dropTarget = targets[0] || null;
+            if(dropTarget?.getData("cardSlot") && !dropTarget.getData("occupied")) {
+                dropTarget.setData("occupied", {"card": this.dragObj, "rotation": this.dragObj.rotation});
+                this.dragObj.setRotation(0);
+                this.dragObj.x = dropTarget.x;
+                this.dragObj.y = dropTarget.y;
+                this.dragObj.removeInteractive();
+            }
+            else {
+                this.dragObj.setInteractive();
+            }
+        }
+
         this.replaceDragObj(null);
-        this.input.off('pointermove', this.doDrag, this);
+        this.input.off('pointermove', this.drag, this);
     }
 
     replaceDragObj(newObj: any) {
+        if(this.dragObj) {
+        }
+
         this.dragObj = newObj;
 
         if(newObj) {
@@ -73,9 +105,6 @@ class playGame extends Phaser.Scene {
     }
 
     update() {
-        if (this.dragObj) {
-            this.dragObj.setRotation(this.dragObj.rotation + Math.PI * 0.01);
-        }
     }
 }
 

@@ -1,16 +1,45 @@
 import Phaser, { GameObjects } from "phaser";
-import config from "../config";
 import cards_png from "../assets/cards.png";
 import init from "./setup";
+import shared from "../../shared/shared";
+import { io, Socket } from 'socket.io-client'
+import { environment } from "./environment";
 
-class playGame extends Phaser.Scene {
+class ElementumMain extends Phaser.Scene {
     dragOffset: { x: number; y: number; } = { x: 0, y: 0 };
     dragObj: any;
     // interactive objects sorted by depth. last always has depth=1000
     depthTracker: {name: string, depth: number}[] = [];
+    playerAction: shared.PlayerAction = {
+        attack1: null,
+        attack2: null,
+        defend: null
+    };
+    socket: Socket;
 
     constructor() {
-        super("PlayGame");
+        super("ElementumMain");
+        this.socket = io(environment.serverURL, environment.IoConnectionOptions)
+    
+        this.socket.on("connect_error", (err: any) => {
+          console.error(err)
+        })
+    
+        window.addEventListener('beforeunload', () => {
+          this.socket.close()
+        })
+
+        this.socket.on("gameUpdate", (update: {[key:string]: shared.ElementCluster}) => {
+            console.log(update["enemy"]);
+            for(const playerStr of ["player", "enemy"]) {
+                for(const [elementName, active] of Object.entries(update[playerStr])) {
+                    let objName = `element_${playerStr}_${elementName}`
+                    let obj = this.children.getByName(objName) as Phaser.GameObjects.Shape;
+                    let color = active ? obj?.getData("element").color : obj?.getData("element").alternateColor;
+                    obj?.setFillStyle(color);
+                }
+            }
+        })
     }
 
     preload() {
@@ -27,6 +56,7 @@ class playGame extends Phaser.Scene {
 
     mouseDown(pointer: { x: number; y: number; }, targets: any[]) {
         let target = targets[0] || null;
+        console.log(target);
 
         if(target?.getData("card")) {
             this.replaceDragObj(targets[0]);
@@ -37,6 +67,10 @@ class playGame extends Phaser.Scene {
             this.replaceDragObj(occupiedComponent.card);
             this.dragObj.setRotation(occupiedComponent.rotation);
             target.setData("occupied", null);
+
+            // reset player action
+            let cardSlot = target.getData("cardSlot").type as keyof shared.PlayerAction;
+            this.playerAction[cardSlot] = null;
         }
 
         if (this.dragObj) {
@@ -59,12 +93,20 @@ class playGame extends Phaser.Scene {
 
         if(this.dragObj.getData("card")) {
             let dropTarget = targets[0] || null;
+
+            // drop card on card slot
             if(dropTarget?.getData("cardSlot") && !dropTarget.getData("occupied")) {
                 dropTarget.setData("occupied", {"card": this.dragObj, "rotation": this.dragObj.rotation});
                 this.dragObj.setRotation(0);
                 this.dragObj.x = dropTarget.x;
                 this.dragObj.y = dropTarget.y;
                 this.dragObj.removeInteractive();
+
+                // update player action
+                let cardSlot = dropTarget.getData("cardSlot").type as keyof shared.PlayerAction;
+                let cardType = this.dragObj.getData("card").type as shared.ElementName;
+                this.playerAction[cardSlot] = cardType;
+                console.log(this.playerAction);
             }
             else {
                 this.dragObj.setInteractive();
@@ -101,6 +143,7 @@ class playGame extends Phaser.Scene {
 
             newObj.depth = maxDepth;
             this.depthTracker.push(newObj);
+            console.log(newObj.depth);
         }
     }
 
@@ -108,4 +151,4 @@ class playGame extends Phaser.Scene {
     }
 }
 
-export default playGame;
+export default ElementumMain;

@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import playGame from "./game/main";
+import ElementumMain from "./game/main";
 
 
 
@@ -8,7 +8,7 @@ const config = {
     parent: "phaser",
     width: 800,
     height: 600,
-    scene: playGame,
+    scene: ElementumMain,
     physics: {
         default: "matter",
         matter: {

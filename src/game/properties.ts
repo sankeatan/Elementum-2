@@ -1,104 +1,65 @@
-const props = {
-    elements: {
+namespace props {
+    export const elements: {[key:string]: any} = {
         "fire": {
-            style: {
-                strokeStyle: "orange",
-                fillStyle: 0xff4500
-            },
-            alternateColor: "orange",
-            alternateColorHex: 0xff5611,
+            type: "fire",
+            color: 0x882211,
+            alternateColor: 0xff4500,
         },
         "water": {
-            style: {
-                strokeStyle: "aqua",
-                fillStyle: 0x0000ff
-            },
-            alternateColor: 0x1111ff
+            type: "water",
+            color: 0x223399,
+            alternateColor: 0x1111ff,
         },
         "earth": {
-            style: {
-                strokeStyle: "darkgreen",
-                fillStyle: 0x776600
-            },
-            alternateColor: 0x226622
+            type: "earth",
+            color: 0x554411,
+            alternateColor: 0x775500,
         },
         "electricity": {
-            style: {
-                strokeStyle: "blue",
-                fillStyle: 0xdddd33
-            },
-            alternateColor: 0x0000ff,
+            type: "electricity",
+            color: 0xaaaa00,
+            alternateColor: 0xffff00,
         },
         "nether": {
-            style: {
-                strokeStyle: 0xa000c8,
-                fillStyle: 0x330033
-            },
-            alternateColor: 0xa000c8
+            type: "nether",
+            color: 0x552255,
+            alternateColor: 0xa000c8,
         },
-    },
+    }
 
-    cardSlots: {
+    export const cardSlots: {[key:string]: any} = {
         "attack1": {
-            style: {
-                fillStyle: 0xff0000,
-            }
+            type: "attack",
+            color: 0xaa2222,
         },
         "attack2": {
-            style: {
-                fillStyle: 0xff0000,
-            }
+            type: "attack",
+            color: 0xaa2222,
         },
         "defend": {
-            style: {
-                fillStyle: 0x0000ff,
-            }
+            type: "defend",
+            color: 0x1133bb,
         },
-    },
+    }
 
-    cards: {
+    export const cards: {[key:string]: any} = {
         "fire": {
-            elementType: "fire",
-            style: {
-                fillStyle: 0xff0000,
-            }
-        },
-        "water": {
-            elementType: "water",
-            style: {
-                fillStyle: 0x0000ff,
-            }
-        },
-        "earth": {
-            elementType: "earth",
-            style: {
-                fillStyle: 0x776600,
-            }
+            type: "fire"
         },
         "electricity": {
-            elementType: "electricity",
-            style: {
-                fillStyle: 0xffff00,
-            }
+            type: "electricity"
+        },
+        "water": {
+            type: "water"
         },
         "nether": {
-            elementType: "nether",
-            style: {
-                fillStyle: 0xa000c8,
-            }
+            type: "nether"
+        },
+        "earth": {
+            type: "earth"
         },
         "wand": {
-            elementType: undefined,
-            style: {
-                fillStyle: 0x000000,
-            }
-        },
-        "HIDDEN": {
-            elementType: undefined,
-            style: {
-                fillStyle: 0xcccccc,
-                strokeStyle: "red"
-            }
+            type: "wand"
         },
     }
 }

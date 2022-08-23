@@ -3,11 +3,11 @@ import ElementumMain from './main';
 import props from './properties';
 
 const cardSheetLayout: [string[],string[]] = [
-    ["fire", "electricity", "water"],
+    ["fire", "lightning", "water"],
     ["nether", "earth", "wand"]
 ]
 
-function initCards(scene: Phaser.Scene): void {
+function initCards(scene: ElementumMain): void {
     let rot_start = -Math.PI / 4;
     let rot_end = Math.PI / 4;
     for (let col = 0; col < 3; col++) {
@@ -38,7 +38,7 @@ function initCards(scene: Phaser.Scene): void {
     }
 }
 
-function initCardSlots(scene: Phaser.Scene): void {
+function initCardSlots(scene: ElementumMain): void {
     let card_height = config.height * .17
     let card_width = card_height * .7159
     let xstart = config.width * .18
@@ -68,7 +68,7 @@ function initCardSlots(scene: Phaser.Scene): void {
     }
 }
 
-function initElements(scene: Phaser.Scene): void {
+function initElements(scene: ElementumMain): void {
     for (const params of [
         { name: "player", x: config.width * 3 / 4, y: config.height * 3 / 4, rotation: 0 },
         { name: "enemy", x: config.width * 3 / 4, y: config.height * 1 / 4, rotation: Math.PI }
@@ -145,7 +145,7 @@ function addSubmitButton(scene: ElementumMain): void {
     })
 }
 
-export default function init(scene: Phaser.Scene) {
+export default function init(scene: ElementumMain) {
     initCardSlots(scene)
     initElements(scene)
     initCards(scene)

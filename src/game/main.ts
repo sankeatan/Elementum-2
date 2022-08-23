@@ -35,7 +35,7 @@ class ElementumMain extends Phaser.Scene {
                 for(const [elementName, active] of Object.entries(update[playerStr])) {
                     let objName = `element_${playerStr}_${elementName}`
                     let obj = this.children.getByName(objName) as Phaser.GameObjects.Shape;
-                    let color = active ? obj?.getData("element").color : obj?.getData("element").alternateColor;
+                    let color = active ? obj?.getData("element").alternateColor : obj?.getData("element").color;
                     obj?.setFillStyle(color);
                 }
             }

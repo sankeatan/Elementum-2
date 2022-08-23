@@ -1,0 +1,14 @@
+body {
+    margin: 0;
+}
+
+/* #game {
+} */
+
+.slot {
+    width: 100px;
+    height: 100px;
+    background-color: #ccc;
+    border: 1px solid #000;
+    margin: 10px;
+}

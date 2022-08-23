@@ -9,3 +9,15 @@ node_modules/
 
 # Build
 dist
+
+# Other
+client/node_modules
+server/node_modules
+server/dist
+client/package-lock.json
+server/package-lock.json
+build
+build_tmp
+WinSCP.log
+.vscode
+__gitignore__*

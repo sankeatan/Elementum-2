@@ -15,8 +15,8 @@ namespace props {
             color: 0x554411,
             alternateColor: 0x775500,
         },
-        "electricity": {
-            type: "electricity",
+        "lightning": {
+            type: "lightning",
             color: 0xaaaa00,
             alternateColor: 0xffff00,
         },
@@ -46,8 +46,8 @@ namespace props {
         "fire": {
             type: "fire"
         },
-        "electricity": {
-            type: "electricity"
+        "lightning": {
+            type: "lightning"
         },
         "water": {
             type: "water"

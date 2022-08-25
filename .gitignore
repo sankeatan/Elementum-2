@@ -1,14 +1,23 @@
 # System and IDE files
 Thumbs.db
 .DS_Store
-.idea
-*.suo
-*.sublime-project
-*.sublime-workspace
+.vscode
+
 
 # Vendors
 node_modules/
 
 # Build
-dist/
-/npm-debug.log
+dist
+
+# Other
+client/node_modules
+server/node_modules
+server/dist
+client/package-lock.json
+server/package-lock.json
+build
+build_tmp
+WinSCP.log
+.vscode
+__gitignore__*

@@ -1,14 +1,15 @@
 import Phaser from 'phaser';
-import ElementumMain from "./game/main";
+import ElementumBrowser from "./game/scenes/browser";
+import ElementumLobby from "./game/scenes/lobby";
 
 
 
 const config = {
     type: Phaser.AUTO,
-    parent: "phaser",
     width: 800,
     height: 600,
-    scene: ElementumMain,
+    parent: "phaser",
+    scene: [ElementumBrowser, ElementumLobby],
     physics: {
         default: "matter",
         matter: {

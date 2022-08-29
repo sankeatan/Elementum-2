@@ -1,11 +1,11 @@
 import Phaser, { GameObjects } from "phaser";
-import cards_png from "../assets/cards.png";
-import init from "./setup";
-import shared from "../../shared/shared";
+import cards_png from "../../assets/cards.png";
+import init from "./../setup";
+import shared from "../../../shared/shared";
 import { io, Socket } from 'socket.io-client'
-import { environment } from "./environment";
+import { environment } from "./../environment";
 
-class ElementumMain extends Phaser.Scene {
+class ElementumLobby extends Phaser.Scene {
     dragOffset: { x: number; y: number; } = { x: 0, y: 0 };
     dragObj: any;
     // interactive objects sorted by depth. last always has depth=1000
@@ -18,7 +18,7 @@ class ElementumMain extends Phaser.Scene {
     socket: Socket;
 
     constructor() {
-        super("ElementumMain");
+        super("ElementumLobby");
         this.socket = io(environment.serverURL, environment.IoConnectionOptions)
     
         this.socket.on("connect_error", (err: any) => {
@@ -151,4 +151,4 @@ class ElementumMain extends Phaser.Scene {
     }
 }
 
-export default ElementumMain;
+export default ElementumLobby;

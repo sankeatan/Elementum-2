@@ -4,6 +4,7 @@ import init from "./../newgame";
 import shared from "../../../shared/shared";
 import { io, Socket } from 'socket.io-client'
 import { environment } from "./../environment";
+import Button from "../components/button";
 
 class ElementumLobby extends Phaser.Scene {
     dragOffset: { x: number; y: number; } = { x: 0, y: 0 };
@@ -49,6 +50,10 @@ class ElementumLobby extends Phaser.Scene {
 
     create() {
         init(this);
+
+        new Button(100, 50, "Back to Menu", this, () => {
+            this.scene.start("ElementumBrowser");
+        })
 
         this.input.on('pointerdown', this.mouseDown, this);
         this.input.on('pointerup', this.mouseUp, this);

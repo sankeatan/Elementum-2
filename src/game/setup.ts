@@ -1,5 +1,5 @@
 import config from '../config';
-import ElementumMain from './main';
+import ElementumLobby from './scenes/lobby';
 import props from './properties';
 
 const cardSheetLayout: [string[],string[]] = [
@@ -7,7 +7,7 @@ const cardSheetLayout: [string[],string[]] = [
     ["nether", "earth", "wand"]
 ]
 
-function initCards(scene: ElementumMain): void {
+function initCards(scene: ElementumLobby): void {
     let rot_start = -Math.PI / 4;
     let rot_end = Math.PI / 4;
     for (let col = 0; col < 3; col++) {
@@ -38,7 +38,7 @@ function initCards(scene: ElementumMain): void {
     }
 }
 
-function initCardSlots(scene: ElementumMain): void {
+function initCardSlots(scene: ElementumLobby): void {
     let card_height = config.height * .17
     let card_width = card_height * .7159
     let xstart = config.width * .18
@@ -68,7 +68,7 @@ function initCardSlots(scene: ElementumMain): void {
     }
 }
 
-function initElements(scene: ElementumMain): void {
+function initElements(scene: ElementumLobby): void {
     for (const params of [
         { name: "player", x: config.width * 3 / 4, y: config.height * 3 / 4, rotation: 0 },
         { name: "enemy", x: config.width * 3 / 4, y: config.height * 1 / 4, rotation: Math.PI }
@@ -96,7 +96,7 @@ function initElements(scene: ElementumMain): void {
     }
 }
 
-function addSubmitButton(scene: ElementumMain): void {
+function addSubmitButton(scene: ElementumLobby): void {
     // add a gray submit button to the bottom middle of the screen
     let x = config.width / 2
     let y = config.height - config.height * 0.1
@@ -145,7 +145,7 @@ function addSubmitButton(scene: ElementumMain): void {
     })
 }
 
-export default function init(scene: ElementumMain) {
+export default function init(scene: ElementumLobby) {
     initCardSlots(scene)
     initElements(scene)
     initCards(scene)

@@ -1,6 +1,6 @@
 import Phaser, { GameObjects } from "phaser";
 import cards_png from "../../assets/cards.png";
-import init from "./../setup";
+import init from "./../newgame";
 import shared from "../../../shared/shared";
 import { io, Socket } from 'socket.io-client'
 import { environment } from "./../environment";

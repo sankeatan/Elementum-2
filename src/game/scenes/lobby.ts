@@ -52,7 +52,7 @@ class ElementumLobby extends Phaser.Scene {
         init(this);
 
         new Button(100, 50, "Back to Menu", this, () => {
-            this.scene.start("ElementumBrowser");
+            this.scene.start("ElementumMainMenu");
         })
 
         this.input.on('pointerdown', this.mouseDown, this);

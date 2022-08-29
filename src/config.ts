@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import ElementumBrowser from "./game/scenes/browser";
+import ElementumMainMenu from "./game/scenes/mainmenu";
 import ElementumLobby from "./game/scenes/lobby";
 
 
@@ -9,7 +9,7 @@ const config = {
     width: 800,
     height: 600,
     parent: "phaser",
-    scene: [ElementumBrowser, ElementumLobby],
+    scene: [ElementumMainMenu, ElementumLobby],
     physics: {
         default: "matter",
         matter: {

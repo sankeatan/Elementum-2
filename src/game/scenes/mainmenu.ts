@@ -1,4 +1,4 @@
-// main menu, settings, lobby browser, etc.
+// main menu, settings, lobby mainmenu, etc.
 import Phaser from "phaser";
 import shared from "../../../shared/shared";
 import { io, Socket } from 'socket.io-client'
@@ -7,9 +7,9 @@ import Button from "../components/button";
 import ElementumLobby from "./lobby";
 import browser_bg from "../../assets/openai-bg.png";
 
-class ElementumBrowser extends Phaser.Scene {
+class ElementumMainMenu extends Phaser.Scene {
     constructor() {
-        super("ElementumBrowser");
+        super("ElementumMainMenu");
     }
 
     preload() {
@@ -33,4 +33,4 @@ class ElementumBrowser extends Phaser.Scene {
     }
 }
 
-export default ElementumBrowser;
+export default ElementumMainMenu;

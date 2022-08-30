@@ -6,7 +6,7 @@ import config from "./../../config";
 import Button from "../components/button";
 import ElementumLobby from "./lobby";
 import browser_bg from "../../assets/openai-bg.png";
-import {createLobbyBrowserWindow} from "../components/lobbybrowser";
+import {LobbyBrowserWindow} from "../components/lobbybrowser";
 
 class ElementumLobbyBrowser extends Phaser.Scene {
     constructor() {
@@ -24,36 +24,38 @@ class ElementumLobbyBrowser extends Phaser.Scene {
             this.scene.start("ElementumMainMenu");
         });
 
-        let lobbyBrowserWindow = createLobbyBrowserWindow(this, [
-            "one\t\t1/2 (0)",
-            "two\t\t1/2 (0)",
-            "three\t\t1/2 (0)",
-            "four\t\t1/2 (0)",
-            "five\t\t1/2 (0)",
-            "six\t\t1/2 (0)",
-            "seven\t\t1/2 (0)",
-            "eight\t\t1/2 (0)",
-            "nine\t\t1/2 (0)",
-            "ten\t\t1/2 (0)",
-            "eleven\t\t1/2 (0)",
-            "twelve\t\t1/2 (0)",
-            "thirteen\t\t1/2 (0)",
-            "fourteen\t\t1/2 (0)",
-            "fifteen\t\t1/2 (0)",
-            "sixteen\t\t1/2 (0)",
-            "seventeen\t\t1/2 (0)",
-            "eighteen\t\t1/2 (0)",
-            "nineteen\t\t1/2 (0)",
-            "twenty\t\t1/2 (0)",
+        let lobbyBrowserWindow = new LobbyBrowserWindow(this, [
+            "one                        1/2 (0)                        30",
+            "two                        1/2 (0)                        30",
+            "three                      1/2 (0)                        30",
+            "four                       1/2 (0)                        30",
+            "five                       1/2 (0)                        30",
+            "six                        1/2 (0)                        30",
+            "seven                      1/2 (0)                        30",
+            "eight                      1/2 (0)                        30",
+            "nine                       1/2 (0)                        30",
+            "ten                        1/2 (0)                        30",
+            "eleven                     1/2 (0)                        30",
+            "twelve                     1/2 (0)                        30",
+            "thirteen                   1/2 (0)                        30",
+            "fourteen                   1/2 (0)                        30",
+            "fifteen                    1/2 (0)                        30",
+            "sixteen                    1/2 (0)                        30",
+            "seventeen                  1/2 (0)                        30",
+            "eighteen                   1/2 (0)                        30",
+            "nineteen                   1/2 (0)                        30",
+            "twenty                     1/2 (0)                        30",
         ]);
 
         this.input.on('wheel', (pointer: Phaser.Input.Pointer, gameObjects: any, deltaX: number, deltaY: number, deltaZ: number) => {
-            if(gameObjects[0]?.name != "lobbyBrowserWindow") {
-                return;
+            let browserBounds = lobbyBrowserWindow.container.getBounds();
+            if( pointer.x < browserBounds.left || pointer.x > browserBounds.right ||
+                pointer.y < browserBounds.top  || pointer.y > browserBounds.bottom )
+            {
+                    return
             }
             
             deltaY > 0 ? lobbyBrowserWindow.scroll(1) : lobbyBrowserWindow.scroll(-1);
-            console.log("scroll")
         } );
     }
 

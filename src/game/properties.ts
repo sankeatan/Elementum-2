@@ -4,26 +4,36 @@ namespace props {
             type: "fire",
             color: 0x882211,
             alternateColor: 0xff4500,
+            positive: ["lightning", "nether"],
+            negative: ["water", "earth"],
         },
         "water": {
             type: "water",
             color: 0x223399,
             alternateColor: 0x1111ff,
+            positive: ["lightning", "earth"],
+            negative: ["fire", "nether"],
         },
         "earth": {
             type: "earth",
             color: 0x554411,
             alternateColor: 0x775500,
+            positive: ["nether"],
+            negative: ["water", "lightning"],
         },
         "lightning": {
             type: "lightning",
             color: 0xaaaa00,
             alternateColor: 0xffff00,
+            positive: ["water", "fire"],
+            negative: ["earth"],
         },
         "nether": {
             type: "nether",
             color: 0x552255,
             alternateColor: 0xa000c8,
+            positive: ["earth", "fire"],
+            negative: ["water"],
         },
     }
 

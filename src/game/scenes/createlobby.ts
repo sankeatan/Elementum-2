@@ -1,5 +1,5 @@
 // main menu, settings, lobby mainmenu, etc.
-import Phaser from "phaser";
+import Phaser, { GameObjects } from "phaser";
 import shared from "../../../shared/shared";
 import { io, Socket } from 'socket.io-client'
 import config from "./../../config";
@@ -7,9 +7,9 @@ import Button from "../components/button";
 import ElementumLobby from "./lobby";
 import browser_bg from "../../assets/openai-bg.png";
 
-class ElementumMainMenu extends Phaser.Scene {
+class ElementumCreateLobby extends Phaser.Scene {
     constructor() {
-        super("ElementumMainMenu");
+        super("ElementumCreateLobby");
     }
 
     preload() {
@@ -19,16 +19,8 @@ class ElementumMainMenu extends Phaser.Scene {
     create() {
         this.add.sprite(0, 0, "browser_bg").setOrigin(0, 0).setDisplaySize(config.width, config.height);
 
-        new Button(200, 200, "Join Lobby", this, ()=>{
-            this.scene.start("ElementumLobbyBrowser");
-        });
-
-        new Button(200, 300, "Create Lobby", this, ()=>{
-            this.scene.start("ElementumCreateLobby");
-        });
-
-        new Button(200, 400, "Demo", this, ()=>{
-            this.scene.start("ElementumLobby");
+        new Button(100, 50, "Back to Menu", this, ()=>{
+            this.scene.start("ElementumMainMenu");
         });
     }
 
@@ -36,4 +28,4 @@ class ElementumMainMenu extends Phaser.Scene {
     }
 }
 
-export default ElementumMainMenu;
+export default ElementumCreateLobby;

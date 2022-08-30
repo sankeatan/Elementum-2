@@ -12,6 +12,9 @@ export class LobbyBrowserWindow {
         // socket request
     };
     scroll(jump: number) {
+        if(this.data.length <= this.num_rows_displayed) {
+            return
+        }
         this.top_row_index += jump;
         this.top_row_index = Math.max(0, this.top_row_index);
         this.top_row_index = Math.min(this.top_row_index, this.data.length - this.num_rows_displayed);

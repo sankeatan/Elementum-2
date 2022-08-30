@@ -21,3 +21,5 @@ export const environment = {
     transports: ['websocket', 'polling']
   }
 }
+
+// TODO: automate switching between environments

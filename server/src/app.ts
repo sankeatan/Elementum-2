@@ -26,27 +26,22 @@ function toggleElement(playerSlot: shared.PlayerSlot, cardType: shared.CardType)
     }
 }
 
-function getLobbiesInfo(): shared.LobbyInfo[] {
-    db.all("SELECT lobby_id, lobby_name FROM lobbies", (err, rows) => {
+function replyWithLobbiesInfo(socket: Socket): void {
+    db.all("SELECT lobby_id, lobby_name, 1 'players', 1 'spectators', 30 'ping' FROM lobbies", (err, rows) => {
         if (err) {
             console.error(err);
-            return [];
+            return;
         }
 
-        console.log(rows);
-        return rows;
+        socket.emit("lobbiesInfo", rows);
     })
-
-    return [];
 }
 
 Socketio.on("connection", (socket: Socket) => {
     console.log("Client connected");
 
     socket.on("getLobbiesInfo", () => {
-        const data = getLobbiesInfo();
-        console.log(data);
-        socket.emit("lobbiesInfo", data);
+        replyWithLobbiesInfo(socket);
     }),
 
     socket.on("submitAction", (data: {playerSlot: shared.PlayerSlot, playerAction: shared.PlayerAction}) => {

@@ -4,9 +4,9 @@
   "description": "Phaser 3 TypeScript Starter",
   "main": "dist/index.js",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --port 8000",
     "build": "vite build",
-    "serve": "vite preview"
+    "serve": "vite preview --port 8000"
   },
   "repository": {
     "type": "git",

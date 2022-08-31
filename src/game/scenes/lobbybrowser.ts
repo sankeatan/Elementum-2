@@ -27,7 +27,7 @@ class ElementumLobbyBrowser extends Phaser.Scene {
           this.socket.close()
         })
 
-        this.lobbyBrowserWindow = new LobbyBrowserWindow(this);
+        // this.lobbyBrowserWindow = new LobbyBrowserWindow(this);
 
         this.socket.emit("getLobbiesInfo");
     }
@@ -36,8 +36,9 @@ class ElementumLobbyBrowser extends Phaser.Scene {
         this.load.image("browser_bg", browser_bg);
 
         this.socket.on("lobbiesInfo", (lobbies: shared.LobbyInfo[]) => {
+            console.log("got lobbiesInfo");
             console.log(lobbies);
-            // this.lobbyBrowserWindow?.set_data(lobbies);
+            this.lobbyBrowserWindow?.set_data(lobbies);
         });
     }
 
@@ -48,7 +49,8 @@ class ElementumLobbyBrowser extends Phaser.Scene {
             this.scene.start("ElementumMainMenu");
         });
 
-        // let lobbyBrowserWindow = new LobbyBrowserWindow(this, [
+        this.lobbyBrowserWindow = new LobbyBrowserWindow(this);
+        // this.lobbyBrowserWindow.set_data( [
         //     {lobbyname: "one", players: Math.floor(((Math.random() * 2)+1)), spectators: 0, ping: 30},
         //     {lobbyname: "two", players: Math.floor(((Math.random() * 2)+1)), spectators: 0, ping: 30},
         //     {lobbyname: "three", players: Math.floor(((Math.random() * 2)+1)), spectators: 0, ping: 30},

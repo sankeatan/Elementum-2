@@ -19,7 +19,7 @@ namespace shared {
   }
 
   export interface LobbyInfo {
-    lobbyname: string,
+    lobby_name: string,
     players: number,
     spectators: number,
     ping: number

@@ -93,8 +93,8 @@ function initElements(scene: ElementumLobby): void {
             
             for (const positive of Object.values(data.positive)){
                 let connection = `element_${params.name}_${positive}`
-                if (scene.children.getByName(connection)){
-                    let otherElement = scene.children.getByName(connection);
+                let otherElement: Phaser.GameObjects.Shape = scene.children.getByName(connection) as Phaser.GameObjects.Shape;
+                if (otherElement){
                     scene.add.line(
                         Math.sqrt(center_distance)/2,
                         Math.sqrt(center_distance)/2,
@@ -107,22 +107,22 @@ function initElements(scene: ElementumLobby): void {
                         .setName(`pos_${params.name}_${positive}`)
                         .depth=-1000;
                 }
-                for (const negative of Object.values(data.negative)){
-                    let connection = `element_${params.name}_${negative}`
-                    if (scene.children.getByName(connection)){
-                        let otherElement = scene.children.getByName(connection);
-                        scene.add.line(
-                            Math.sqrt(center_distance)/2,
-                            Math.sqrt(center_distance)/2,
-                            element.x, 
-                            element.y,
-                            otherElement.x,
-                            otherElement.y,
-                            0xff0000,)
-                            .setOrigin(0, 0)
-                            .setName(`neg_${params.name}_${negative}`)
-                            .depth=-1000;
-                    }
+            }
+            for (const negative of Object.values(data.negative)){
+                let connection = `element_${params.name}_${negative}`
+                let otherElement: Phaser.GameObjects.Shape = scene.children.getByName(connection) as Phaser.GameObjects.Shape;
+                if (otherElement){
+                    scene.add.line(
+                        Math.sqrt(center_distance)/2,
+                        Math.sqrt(center_distance)/2,
+                        element.x, 
+                        element.y,
+                        otherElement.x,
+                        otherElement.y,
+                        0xff0000,)
+                        .setOrigin(0, 0)
+                        .setName(`neg_${params.name}_${negative}`)
+                        .depth=-1000;
                 }
             }
 

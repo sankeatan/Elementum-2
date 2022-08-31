@@ -21,7 +21,9 @@ class ElementumLobby extends Phaser.Scene {
     constructor() {
         super("ElementumLobby");
         this.socket = io(environment.serverURL, environment.IoConnectionOptions)
-    
+    }
+
+    init() {
         this.socket.on("connect_error", (err: any) => {
           console.error(err)
         })

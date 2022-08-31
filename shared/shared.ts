@@ -17,6 +17,13 @@ namespace shared {
     attack2: CardType | null
     defend: CardType | null
   }
+
+  export interface LobbyInfo {
+    lobbyname: string,
+    players: number,
+    spectators: number,
+    ping: number
+  }
 }
 
 export default shared;

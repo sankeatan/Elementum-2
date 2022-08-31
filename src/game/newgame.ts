@@ -91,6 +91,8 @@ function initElements(scene: ElementumLobby): void {
                 .setName(objName)
                 .setData("element", data)
 
+            let line = scene.add.line(0, 0, 0, 0, 0, 0, 0x000000)
+
             angle += angle_increment
         }
     }

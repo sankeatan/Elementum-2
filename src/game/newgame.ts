@@ -105,6 +105,7 @@ function initElements(scene: ElementumLobby): void {
                         0x0000ff,)
                         .setOrigin(0, 0)
                         .setName(`pos_${params.name}_${positive}`)
+                        .setLineWidth(3)
                         .depth=-1000;
                 }
             }
@@ -122,7 +123,8 @@ function initElements(scene: ElementumLobby): void {
                         0xff0000,)
                         .setOrigin(0, 0)
                         .setName(`neg_${params.name}_${negative}`)
-                        .depth=-1000;
+                        .setLineWidth(3)
+                        .depth=-100;
                 }
             }
 

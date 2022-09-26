@@ -109,6 +109,7 @@ function initElements(scene: ElementumLobby): void {
                         .depth=-1000;
                 }
             }
+
             for (const negative of Object.values(data.negative)){
                 let connection = `element_${params.name}_${negative}`
                 let otherElement: Phaser.GameObjects.Shape = scene.children.getByName(connection) as Phaser.GameObjects.Shape;
@@ -128,9 +129,7 @@ function initElements(scene: ElementumLobby): void {
                 }
             }
 
-            let line = scene.add.line(0, 0, 0, 0, 0, 0, 0x000000)
-
-            angle += angle_increment
+            angle += angle_increment;
         }
     }
 }

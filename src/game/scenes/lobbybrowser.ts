@@ -62,9 +62,41 @@ class ElementumLobbyBrowser extends Phaser.Scene {
             
             deltaY > 0 ? this.lobbyBrowserWindow.scroll(1) : this.lobbyBrowserWindow.scroll(-1);
         } );
+
+        this.input.on('pointerdown', this.showData, this);
     }
 
     update() {
+    }
+
+    // mouseDown() {
+    //     let target = targets[0] || null;
+    //     let target2 = targets[1] || null;
+    //     console.log(target);
+    //     console.log(target2);
+    // }
+    
+    showData(pointer: { x: number; y: number; }, targets: any[]) {
+        if(this.lobbyBrowserWindow == null) {
+            return;
+        }
+
+        let x = this.lobbyBrowserWindow.x;
+        let y = this.lobbyBrowserWindow.y + this.lobbyBrowserWindow.header_height;
+        let width = this.lobbyBrowserWindow.width - this.lobbyBrowserWindow.scrollbar_w;
+        let height = this.lobbyBrowserWindow.height - this.lobbyBrowserWindow.header_height;
+
+        if(pointer.x >= x && pointer.y >= y && pointer.x <= x + width && pointer.y <= y + height) {
+            console.log("inside!");
+
+            let row_height = height / 10;
+            let row_num = Math.floor((pointer.y - y) / row_height);
+            let index = this.lobbyBrowserWindow.top_row_index + row_num;
+            console.log(this.lobbyBrowserWindow.data[index]);
+        }
+        else {
+            console.log("outside");
+        }
     }
 }
 

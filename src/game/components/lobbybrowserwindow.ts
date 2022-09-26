@@ -128,7 +128,6 @@ export class LobbyBrowserWindow {
 
                 })
                 .setName("lobbyBrowserRow" + i)
-                .setInteractive()
                 .setName("rowtext")
 
             const bg_obj = scene.add

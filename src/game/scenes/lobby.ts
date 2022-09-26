@@ -1,10 +1,12 @@
 import Phaser, { GameObjects } from "phaser";
 import cards_png from "../../assets/cards.png";
+import lobby_bg from "../../assets/midjourney_arena_bg.png";
 import init from "./../newgame";
 import shared from "../../../shared/shared";
 import { io, Socket } from 'socket.io-client'
 import { environment } from "./../environment";
 import Button from "../components/button";
+import config from "../../config";
 
 class ElementumLobby extends Phaser.Scene {
     dragOffset: { x: number; y: number; } = { x: 0, y: 0 };
@@ -18,7 +20,10 @@ class ElementumLobby extends Phaser.Scene {
     };
     socket: Socket;
 
-    constructor() {
+    player: string;
+    player_id: number;
+
+    constructor(player_id: number, which_player: string) {
         super("ElementumLobby");
         this.socket = io(environment.serverURL, environment.IoConnectionOptions)
     }
@@ -47,10 +52,12 @@ class ElementumLobby extends Phaser.Scene {
 
     preload() {
         this.load.image("cards", cards_png);
+        this.load.image("lobby_bg", lobby_bg);
         this.dragOffset = { x: 0, y: 0 };
     }
 
     create() {
+        this.add.sprite(0, 0, "lobby_bg").setOrigin(0, 0).setDisplaySize(config.width, config.height);
         init(this);
 
         new Button(100, 50, "Back to Menu", this, () => {

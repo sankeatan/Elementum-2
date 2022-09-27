@@ -42,7 +42,17 @@ Socketio.on("connection", (socket: Socket) => {
 
     socket.on("getLobbiesInfo", () => {
         replyWithLobbiesInfo(socket);
-    }),
+    })
+
+    socket.on("joinLobby", (data: {lobby_id: number}) => {
+        if(data.lobby_id){
+        socket.join(`${data.lobby_id}`);
+        console.log(`Joined Lobby: ${data.lobby_id}`);
+        }
+        else {
+            console.log(`Did not connect`)
+        }
+    })
 
     socket.on("submitAction", (data: {playerSlot: shared.PlayerSlot, playerAction: shared.PlayerAction}) => {
         console.log("Received submitAction...")

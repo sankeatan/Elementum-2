@@ -20,15 +20,20 @@ class ElementumLobby extends Phaser.Scene {
     };
     socket: Socket;
 
-    player: string;
-    player_id: number;
+    lobby_id!: number;
+    player_specifier!: string;
+    player_id!: number;
 
-    constructor(player_id: number, which_player: string) {
+    constructor() {
         super("ElementumLobby");
-        this.socket = io(environment.serverURL, environment.IoConnectionOptions)
+        this.socket = io(environment.serverURL, environment.IoConnectionOptions);
     }
 
-    init() {
+    init(data: {lobby_id: number, player_id: number, player_specifier: string}) {
+        this.lobby_id = data.lobby_id;
+        this.player_specifier = data.player_specifier;
+        this.player_id = data.player_id;
+        this.socket.emit("joinLobby", data);
         this.socket.on("connect_error", (err: any) => {
           console.error(err)
         })

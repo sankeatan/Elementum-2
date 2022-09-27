@@ -11,6 +11,9 @@ import { environment } from "../environment";
 class ElementumLobbyBrowser extends Phaser.Scene {
     socket: Socket;
     lobbyBrowserWindow?: LobbyBrowserWindow;
+    modalMode: boolean = false;
+    joinButton!: Button;
+    selectedLobbyInfo: shared.LobbyInfo | null = null;
 
     constructor() {
         super("ElementumLobbyBrowser");
@@ -41,7 +44,12 @@ class ElementumLobbyBrowser extends Phaser.Scene {
         this.add.sprite(0, 0, "browser_bg").setOrigin(0, 0).setDisplaySize(config.width, config.height);
 
         new Button(100, 50, "Back to Menu", this, ()=>{
-            this.scene.start("ElementumMainMenu");
+            this.scene.start("ElementumMainMenu", );
+        });
+
+        this.joinButton = new Button(-200, -200, "Join", this, () => {
+            console.log(this.selectedLobbyInfo);
+            this.scene.start("ElementumLobby", this.selectedLobbyInfo)
         });
 
         this.lobbyBrowserWindow = new LobbyBrowserWindow(this);
@@ -77,6 +85,10 @@ class ElementumLobbyBrowser extends Phaser.Scene {
     // }
     
     showData(pointer: { x: number; y: number; }, targets: any[]) {
+        if(this.modalMode == true) {
+            return;
+        }
+
         if(this.lobbyBrowserWindow == null) {
             return;
         }
@@ -92,10 +104,19 @@ class ElementumLobbyBrowser extends Phaser.Scene {
             let row_height = height / 10;
             let row_num = Math.floor((pointer.y - y) / row_height);
             let index = this.lobbyBrowserWindow.top_row_index + row_num;
-            console.log(this.lobbyBrowserWindow.data[index]);
+            this.selectedLobbyInfo = this.lobbyBrowserWindow.data[index];
+
+            if(this.selectedLobbyInfo) {
+                this.joinButton.button.x = x - 30;
+                this.joinButton.button.y = y + (row_num * row_height) + 0.5 * row_height;
+            }
         }
         else {
             console.log("outside");
+            this.selectedLobbyInfo = null;
+
+            this.joinButton.button.x = -200;
+            this.joinButton.button.y = -200;
         }
     }
 }

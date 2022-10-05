@@ -90,12 +90,14 @@ function initElements(scene: ElementumLobby): void {
                 .setRotation(angle)
                 .setName(objName)
                 .setData("element", data)
+
+            element.depth = 200
             
             for (const positive of Object.values(data.positive)){
                 let connection = `element_${params.name}_${positive}`
                 let otherElement: Phaser.GameObjects.Shape = scene.children.getByName(connection) as Phaser.GameObjects.Shape;
                 if (otherElement){
-                    scene.add.line(
+                    let line = scene.add.line(
                         Math.sqrt(center_distance)/2,
                         Math.sqrt(center_distance)/2,
                         element.x, 
@@ -106,7 +108,8 @@ function initElements(scene: ElementumLobby): void {
                         .setOrigin(0, 0)
                         .setName(`pos_${params.name}_${positive}`)
                         .setLineWidth(3)
-                        .depth=-1000;
+                    
+                    line.depth=0;
                 }
             }
 
@@ -125,7 +128,7 @@ function initElements(scene: ElementumLobby): void {
                         .setOrigin(0, 0)
                         .setName(`neg_${params.name}_${negative}`)
                         .setLineWidth(3)
-                        .depth=-100;
+                        .depth=100;
                 }
             }
 

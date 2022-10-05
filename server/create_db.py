@@ -13,6 +13,8 @@ def create_connection(db_file):
         c.execute("insert into lobbies (lobby_name) values ('lobby for newbs'), ('dave''s game'), ('csglompers'), ('long lobby name name name')")
         c.execute("CREATE TABLE IF NOT EXISTS players ([player_id] INTEGER PRIMARY KEY, [player_name] TEXT)")
         c.execute("insert into players (player_name) values ('dave'), ('cam'), ('mark'), ('urk')")
+        c.execute("CREATE TABLE IF NOT EXISTS sessions ([session_id] INTEGER PRIMARY KEY, [player_id] INTEGER, [token_str] TEXT, [expiration] DATETIME, FOREIGN KEY(player_id) REFERENCES players(player_id))")
+        c.execute("insert into sessions (player_id, token_str, expiration) values (1, '123456', '3000-01-01'), (2, '789101', '3000-01-01)")
         conn.commit()
     except Error as e:
         print(e)

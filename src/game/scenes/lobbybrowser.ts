@@ -49,7 +49,9 @@ class ElementumLobbyBrowser extends Phaser.Scene {
 
         this.joinButton = new Button(-200, -200, "Join", this, () => {
             console.log(this.selectedLobbyInfo);
-            this.scene.start("ElementumLobby", this.selectedLobbyInfo)
+            if(this.selectedLobbyInfo) {
+                this.scene.start("ElementumLobby", this.selectedLobbyInfo)
+            }
         });
 
         this.lobbyBrowserWindow = new LobbyBrowserWindow(this);

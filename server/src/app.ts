@@ -26,6 +26,39 @@ function toggleElement(playerSlot: shared.PlayerSlot, cardType: shared.CardType)
     }
 }
 
+type Token = {str: string, expiration: number}
+
+function generateToken(): Token {
+    let token_str = "xyzmagicaltoken";
+
+    let expiration = Date.now() + 1000 * 60 * 60 * 0.5; // 30 minutes
+
+    return {str: token_str, expiration: expiration};
+}
+
+async function loginAuthentication(username: String, password: String): Promise<Token> {
+    console.log(username, password);
+    let token = new Promise<Token>((resolve, reject) => {
+        db.all("SELECT * FROM players WHERE player_name = ? AND password = ?", [username, password], (err, rows) => {
+            if (err) {
+                console.error(err);
+                reject("database error"); // don't leak internal deatils to client by returning err
+            }
+            else if(rows.length>0){
+                let token = generateToken();
+                resolve(token);
+            }
+            else {
+                console.log("incorrect username or password");
+                reject("incorrect username or password");
+            }
+        })
+
+    })
+
+    return token;
+}
+
 function replyWithLobbiesInfo(socket: Socket): void {
     db.all("SELECT lobby_id, lobby_name, 1 'players', 1 'spectators', 30 'ping' FROM lobbies", (err, rows) => {
         if (err) {
@@ -37,8 +70,21 @@ function replyWithLobbiesInfo(socket: Socket): void {
     })
 }
 
+
+
 Socketio.on("connection", (socket: Socket) => {
     console.log("Client connected");
+
+    socket.on("login", (data: {username: string, password: string}) => {
+        console.log(data);
+        loginAuthentication(data.username, data.password).then((token) => {
+            console.log(token);
+            socket.emit("loginReply", { success: true, token: token })
+        }).catch((err) => {
+            console.log(err);
+            socket.emit("loginReply", { success: false, error: err })
+        })      
+    })
 
     socket.on("getLobbiesInfo", () => {
         replyWithLobbiesInfo(socket);

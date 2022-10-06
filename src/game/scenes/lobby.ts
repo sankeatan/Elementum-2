@@ -3,12 +3,13 @@ import cards_png from "../../assets/cards.png";
 import lobby_bg from "../../assets/midjourney_arena_bg.png";
 import init from "./../newgame";
 import shared from "../../../shared/shared";
-import { io, Socket } from 'socket.io-client'
 import { environment } from "./../environment";
 import Button from "../components/button";
 import config from "../../config";
+import { ElementumSceneBase } from "./scenebase"
+import { Socket } from "socket.io-client";
 
-class ElementumLobby extends Phaser.Scene {
+class ElementumLobby extends ElementumSceneBase {
     dragOffset: { x: number; y: number; } = { x: 0, y: 0 };
     dragObj: any;
     // interactive objects sorted by depth. last always has depth=1000
@@ -18,15 +19,13 @@ class ElementumLobby extends Phaser.Scene {
         attack2: null,
         defend: null
     };
-    socket: Socket;
 
     lobby_id!: number;
     player_specifier!: string;
     player_id!: number;
 
-    constructor() {
-        super("ElementumLobby");
-        this.socket = io(environment.serverURL, environment.IoConnectionOptions);
+    constructor(socket?: Socket) {
+        super("ElementumLobby", socket);
     }
 
     init(data: {lobby_id: number, player_id: number, player_specifier: string}) {

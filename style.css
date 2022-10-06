@@ -5,3 +5,22 @@ body {
 canvas {
     margin-top: 2em;
 }
+
+#login {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0.5em;
+    background-color: rgba(128, 128, 128, 0.224);
+    width: 12em;
+    height: 3.5em;
+    position: absolute;
+    top: 100px;
+    left: 50%;
+    translate: 200px;
+}
+
+.hide {
+    display: none !important;
+}

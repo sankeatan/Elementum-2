@@ -7,17 +7,16 @@ import Button from "../components/button";
 import browser_bg from "../../assets/openai-bg.png";
 import {LobbyBrowserWindow} from "../components/lobbybrowserwindow";
 import { environment } from "../environment";
+import { ElementumSceneBase } from "./scenebase"
 
-class ElementumLobbyBrowser extends Phaser.Scene {
-    socket: Socket;
+class ElementumLobbyBrowser extends ElementumSceneBase {
     lobbyBrowserWindow?: LobbyBrowserWindow;
     modalMode: boolean = false;
     joinButton!: Button;
     selectedLobbyInfo: shared.LobbyInfo | null = null;
 
-    constructor() {
-        super("ElementumLobbyBrowser");
-        this.socket = io(environment.serverURL, environment.IoConnectionOptions)
+    constructor(socket?: Socket) {
+        super("ElementumLobbyBrowser", socket);
     }
 
     init() {
@@ -67,9 +66,9 @@ class ElementumLobbyBrowser extends Phaser.Scene {
             if( pointer.x < browserBounds.left || pointer.x > browserBounds.right ||
                 pointer.y < browserBounds.top  || pointer.y > browserBounds.bottom )
             {
-                return
+                return;
             }
-            
+
             deltaY > 0 ? this.lobbyBrowserWindow.scroll(1) : this.lobbyBrowserWindow.scroll(-1);
         } );
 

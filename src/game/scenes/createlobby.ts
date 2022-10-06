@@ -6,10 +6,11 @@ import config from "./../../config";
 import Button from "../components/button";
 import ElementumLobby from "./lobby";
 import browser_bg from "../../assets/openai-bg.png";
+import { ElementumSceneBase } from "./scenebase";
 
-class ElementumCreateLobby extends Phaser.Scene {
-    constructor() {
-        super("ElementumCreateLobby");
+class ElementumCreateLobby extends ElementumSceneBase {
+    constructor(socket?: Socket) {
+        super("ElementumCreateLobby", socket);
     }
 
     preload() {

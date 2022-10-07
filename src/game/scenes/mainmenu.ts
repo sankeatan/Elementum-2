@@ -25,7 +25,7 @@ class ElementumMainMenu extends ElementumSceneBase {
         // if(this.getCookie("player_id")
         new Login (725, 50, "Login", this)
 
-        new Button (725, 50, "Logout", this)
+        // new Button (725, 50, "Logout", this)
 
         new Button(200, 200, "Join Lobby", this, ()=>{
             this.scene.start("ElementumLobbyBrowser");

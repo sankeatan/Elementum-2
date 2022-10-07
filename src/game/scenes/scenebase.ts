@@ -45,14 +45,14 @@ export class ElementumSceneBase extends Phaser.Scene {
             document.cookie = "player_token=" + data.token.str;
             document.cookie = "player_token_exp=" + data.token.expiration;
             document.cookie = "player_name=" + data.token.player_name;
-            document.cookie = "player_id" + data.token.player_id;
+            document.cookie = "player_id=" + data.token.player_id;
         });
 
         this.socket.on("tokenRefreshReply", (token: {player_id: string, player_name: string, str: string, expiration: string}) => {
             document.cookie = "player_token=" + token.str;
             document.cookie = "player_token_exp=" + token.expiration;
             document.cookie = "player_name=" + token.player_name;
-            document.cookie = "player_id" + token.player_id;
+            document.cookie = "player_id=" + token.player_id;
         });
 
         this.socket.on("lobbiesInfo", (data: shared.LobbyInfo[]) => {

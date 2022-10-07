@@ -26,31 +26,34 @@ function toggleElement(playerSlot: shared.PlayerSlot, cardType: shared.CardType)
     }
 }
 
-type Token = {str: string, expiration: number}
-
-function generateToken(): Token {
+function generateToken(player_name, player_id): shared.Token {
     let token_str = "xyzmagicaltoken";
 
-    let expiration = Date.now() + 1000 * 60 * 60 * 0.5; // 30 minutes
+    let date = new Date();
+    let now_utc = Date.UTC(date.getUTCFullYear(), date.getUTCMonth(),
+                    date.getUTCDate(), date.getUTCHours(),
+                    date.getUTCMinutes() + 15, date.getUTCSeconds());
 
-    return {str: token_str, expiration: expiration};
+    let expiration = (new Date(now_utc)).toISOString().slice(0, 19).replace('T', ' ');
+    
+    return {str: token_str, expiration: expiration, player_name: player_name, player_id: player_id}
 }
 
-async function loginAuthentication(username: String, password: String): Promise<Token> {
-    console.log(username, password);
-    let token = new Promise<Token>((resolve, reject) => {
-        db.all("SELECT * FROM players WHERE player_name = ? AND password = ?", [username, password], (err, rows) => {
+async function authenticateLogin(player_name: String, password: String): Promise<shared.Token> {
+    console.log(player_name, password);
+    let token = new Promise<shared.Token>((resolve, reject) => {
+        db.all("SELECT player_id FROM players WHERE player_name = ? AND password = ?", [player_name, password], (err, rows) => {
             if (err) {
                 console.error(err);
                 reject("database error"); // don't leak internal deatils to client by returning err
             }
             else if(rows.length>0){
-                let token = generateToken();
+                let token = generateToken(player_name, rows[0].player_id);
                 resolve(token);
             }
             else {
-                console.log("incorrect username or password");
-                reject("incorrect username or password");
+                console.log("incorrect player_name or password");
+                reject("incorrect player_name or password");
             }
         })
 
@@ -75,15 +78,50 @@ function replyWithLobbiesInfo(socket: Socket): void {
 Socketio.on("connection", (socket: Socket) => {
     console.log("Client connected");
 
-    socket.on("login", (data: {username: string, password: string}) => {
+    socket.on("login", (data: {player_name: string, password: string}) => {
         console.log(data);
-        loginAuthentication(data.username, data.password).then((token) => {
+        authenticateLogin(data.player_name, data.password).then((token) => {
             console.log(token);
             socket.emit("loginReply", { success: true, token: token })
         }).catch((err) => {
             console.log(err);
             socket.emit("loginReply", { success: false, error: err })
         })      
+    })
+
+    socket.on("getLoginStatus", (data: {token_str: string, player_id: string}) => {
+        console.log(data);
+    })
+
+    socket.on("refreshToken", (data: {token_str: string, player_id: string}) => {
+        db.all("SELECT s.player_id, s.expiration, p.player_name from sessions s JOIN players p on p.player_id=s.player_id WHERE s.token_str = ?", [data.player_id, data.token_str], (err, rows) => {
+            if (err) {
+                console.error(err);
+                socket.emit("tokenRefreshReply"); // don't leak internal deatils to client by returning err
+            }
+            else if(rows.length>0){
+                let token = generateToken(rows[0].player_name, rows[0].player_id);
+                db.run("UPDATE s set s.expiration=date('now', '+30 second') FROM session s WHERE s.player_id=? and s.expiration > date('now', '+30 second')", [data.player_id], (err) => {
+                    if (err) {
+                        return
+                    }
+                    else {
+                        db.run("INSERT into sessions (player_id, token_str, expiration) values (?, ?, ?)", [token.player_id, token.str, token.expiration], (err) => {
+                            if(err) {
+                            }
+                            else {
+                                socket.emit("tokenRefreshReply", {player_id: token.player_id, player_name: token.player_name, str: token.str, expiration: token.expiration});
+                            }
+                        })
+                    }
+                })
+            }
+            else {
+                console.log("incorrect player_name or password");
+                socket.emit("tokenRefreshReply");
+            }
+        })
+
     })
 
     socket.on("getLobbiesInfo", () => {

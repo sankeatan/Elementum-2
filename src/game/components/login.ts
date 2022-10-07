@@ -15,10 +15,10 @@ class Login extends Button {
                 this.button.setStyle({ fill: '#f39c12'})
                 document.getElementById("login")!.classList.toggle('hide');
                 document.getElementById("login_button")!.onclick = function() {
-                    let username = (<HTMLInputElement> document.getElementById("username")).value;
+                    let player_name = (<HTMLInputElement> document.getElementById("player_name")).value;
                     let password = (<HTMLInputElement> document.getElementById("password")).value;
 
-                    scene.socket.emit("login", {username: username, password: password})
+                    scene.socket.emit("login", {player_name: player_name, password: password})
 
 
                 }

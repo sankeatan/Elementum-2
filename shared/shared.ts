@@ -24,6 +24,13 @@ namespace shared {
     spectators: number,
     ping: number
   }
+
+  export interface Token {
+    str: string,
+    expiration: string,
+    player_name: string,
+    player_id: number,
+  }
 }
 
 export default shared;

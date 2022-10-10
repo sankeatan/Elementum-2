@@ -49,7 +49,7 @@ class ElementumLobbyBrowser extends ElementumSceneBase {
         this.joinButton = new Button(-200, -200, "Join", this, () => {
             console.log(this.selectedLobbyInfo);
             if(this.selectedLobbyInfo) {
-                this.scene.start("ElementumLobby", this.selectedLobbyInfo)
+                this.scene.start("ElementumLobby", {"lobbyInfo": this.selectedLobbyInfo});
             }
         });
 

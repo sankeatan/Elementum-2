@@ -11,7 +11,7 @@ def create_connection(db_file):
         c = conn.cursor()
         #Lobby DB
         c.execute("CREATE TABLE IF NOT EXISTS lobbies ([lobby_id] INTEGER PRIMARY KEY, [lobby_name] TEXT, player1 INTEGER, player1_submission TEXT, player2 INTEGER, player2_submission TEXT, [game_state] TEXT)")
-        c.execute("insert into lobbies (lobby_name) values ('lobby for newbs'), ('dave''s game'), ('csglompers'), ('long lobby name name name')")
+        c.execute("insert into lobbies (lobby_id) values ('lobby for newbs'), ('dave''s game'), ('csglompers'), ('long lobby name name name')")
         #Player DB
         c.execute("CREATE TABLE IF NOT EXISTS players ([player_id] INTEGER PRIMARY KEY, [player_name] TEXT UNIQUE, [password] TEXT)")
         c.execute("insert into players (player_name, password) values ('dave', '1234'), ('cam', '2345'), ('mark', '3456'), ('urk', '4567')")

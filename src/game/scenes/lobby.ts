@@ -28,11 +28,16 @@ class ElementumLobby extends ElementumSceneBase {
         super("ElementumLobby", socket);
     }
 
-    init(data: {lobby_id: number, player_id: number, player_specifier: string}) {
-        this.lobby_id = data.lobby_id;
-        this.player_specifier = data.player_specifier;
-        this.player_id = data.player_id;
+    init(data: {"lobbyInfo": shared.LobbyInfo}) {
+        this.lobby_id = data.lobbyInfo.lobby_id;
+        this.player_id = parseInt(this.getCookie("player_id")) || -1;
         this.socket.emit("joinLobby", data);
+
+        if(this.player_id == -1) {
+            alert("Something went wrong");
+            this.scene.start("ElementumLobbyBrowser");
+        }
+
         this.socket.on("connect_error", (err: any) => {
           console.error(err)
         })
@@ -41,10 +46,13 @@ class ElementumLobby extends ElementumSceneBase {
           this.socket.close()
         })
 
-        this.socket.on("gameUpdate", (update: {[key:string]: shared.ElementCluster}) => {
-            console.log(update["enemy"]);
+        this.socket.on("gameUpdate", (data: {
+            new_game_state: {[key:string]: shared.ElementCluster}
+        }) => {
+            alert("Playing animations!");
+            console.log(data.new_game_state["enemy"]);
             for(const playerStr of ["player", "enemy"]) {
-                for(const [elementName, active] of Object.entries(update[playerStr])) {
+                for(const [elementName, active] of Object.entries(data.new_game_state[playerStr])) {
                     let objName = `element_${playerStr}_${elementName}`
                     let obj = this.children.getByName(objName) as Phaser.GameObjects.Shape;
                     let color = active ? obj?.getData("element").alternateColor : obj?.getData("element").color;
@@ -163,6 +171,17 @@ class ElementumLobby extends ElementumSceneBase {
             this.depthTracker.push(newObj);
             console.log(newObj.depth);
         }
+    }
+
+    submitAction() {
+        this.socket.emit("submitAction", {
+            "auth": {
+                "lobby_id": this.lobby_id,
+                "player_id": this.player_id,
+                "token_str": this.getCookie("token_str")
+            },
+            "playerAction": this.playerAction
+        })
     }
 
     update() {

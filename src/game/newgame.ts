@@ -180,7 +180,7 @@ function addSubmitButton(scene: ElementumLobby): void {
         button.setFillStyle(0xcccccc)
     }).on("pointerup", () => {
         button.setFillStyle(0xeeeeee)
-            scene.socket.emit("submitAction", {"playerSlot": "player1", 'playerAction': scene.playerAction})
+            scene.submitAction();
     }).on("pointerupoutside", () => {
         button.setFillStyle(0xdddddd)
     })

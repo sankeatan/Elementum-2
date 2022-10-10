@@ -1,5 +1,6 @@
 import { Socket } from 'socket.io'
 import shared from '../../shared/shared'
+import { performance } from 'perf_hooks';
 
 const sqlite3 = require('sqlite3').verbose();
 const path = require('path')
@@ -10,14 +11,14 @@ const Express = require("express")()
 const Http = require("http").Server(Express)
 const Socketio = require("socket.io")(Http)
 
-var game = {
-    "player1": new shared.ElementCluster(),
-    "player2": new shared.ElementCluster()
+interface Game {
+    "player1": shared.ElementCluster,
+    "player2": shared.ElementCluster,
 }
 
-var mem_db: {[lobby_id: number]: [lobby_name: string]} = {};
+var mem_db: {[lobby_id: number]: [lobby_id: string]} = {};
 
-function toggleElement(playerSlot: shared.PlayerSlot, cardType: shared.CardType): void {
+function toggleElement(game: Game, playerSlot: shared.PlayerSlot, cardType: shared.CardType): void {
     try {
         game[playerSlot][cardType] = !game[playerSlot][cardType]
     }
@@ -63,7 +64,7 @@ async function authenticateLogin(player_name: String, password: String): Promise
 }
 
 function replyWithLobbiesInfo(socket: Socket): void {
-    db.all("SELECT lobby_id, lobby_name, 1 'players', 1 'spectators', 30 'ping' FROM lobbies", (err, rows) => {
+    db.all("SELECT lobby_id, lobby_name, iif(ifnull(player1, 0)=0, 0, 1) + iif(ifnull(player2, 0)=0, 0, 1) 'players', 0 'spectators' FROM lobbies", (err, rows) => {
         if (err) {
             console.error(err);
             return;
@@ -73,7 +74,29 @@ function replyWithLobbiesInfo(socket: Socket): void {
     })
 }
 
+function updateGameState(lobby_id) {
+    // get info for lobby_id
+    db.all("SELECT player1_submission, player2_submission, game_state FROM lobbies WHERE lobby_id = ?", [lobby_id], (err, rows) => {
+        if (err) {
+            console.error(err);
+            return;
+        }
 
+        let game = JSON.parse(rows[0].game_state);
+        let player1_submission = JSON.parse(rows[0].player1_submission);
+        let player2_submission = JSON.parse(rows[0].player2_submission);
+
+        toggleElement(game, "player1", player1_submission.defend);
+        toggleElement(game, "player2", player1_submission.attack1);
+        toggleElement(game, "player2", player1_submission.attack2);
+
+        toggleElement(game, "player2", player2_submission.defend);
+        toggleElement(game, "player1", player2_submission.attack1);
+        toggleElement(game, "player1", player2_submission.attack2);
+
+        // did somebody win?
+    })
+}
 
 Socketio.on("connection", (socket: Socket) => {
     console.log("Client connected");
@@ -128,30 +151,78 @@ Socketio.on("connection", (socket: Socket) => {
         replyWithLobbiesInfo(socket);
     })
 
-    socket.on("joinLobby", (data: {lobby_id: number}) => {
-        if(data.lobby_id){
-        socket.join(`${data.lobby_id}`);
-        console.log(`Joined Lobby: ${data.lobby_id}`);
+    socket.on("joinLobby", (data: {"lobbyInfo": shared.LobbyInfo}) => {
+        if(data.lobbyInfo.lobby_id) {
+            socket.join(`${data.lobbyInfo.lobby_id}`);
+            console.log(`Joined Lobby: ${data.lobbyInfo.lobby_id}`);
         }
         else {
-            console.log(`Did not connect`)
+            console.log(`Did not connect`);
         }
     })
 
-    socket.on("submitAction", (data: {playerSlot: shared.PlayerSlot, playerAction: shared.PlayerAction}) => {
+    socket.on("submitAction", (data: {
+        "auth": {
+            "player_id": number,
+            "lobby_id": number,
+            "token_str": string,
+        },
+        "gameAction": shared.PlayerAction,
+    }) => {
+        // validate the player
         console.log("Received submitAction...")
         try {
-            let enemySlot: shared.PlayerSlot = data.playerSlot == "player1" ? "player2" : "player1"
+            db.all("SELECT player_id FROM sessions WHERE player_id = ? AND token_str = ? AND expiration > date('now')", [data.auth.player_id, data.auth.token_str], (err, rows) => {
+                if(err) {
+                    console.error(err);
+                    return;
+                }
+                else if(rows.length>0) {
+                    let action = data.gameAction;
+                    // query the db to determine which slot the player is in
+                    db.all("SELECT player1, player2 FROM lobbies WHERE lobby_id = ?", [data.auth.lobby_id], (err, rows) => {
+                        if (err) {
+                            console.error(err);
+                            return;
+                        }
+                        else if(rows.length>0){
+                            let playerSlot: shared.PlayerSlot;
+                            if(rows[0].player1 == data.auth.player_id) {
+                                playerSlot = "player1";
+                            }
+                            else if(rows[0].player2 == data.auth.player_id) {
+                                playerSlot = "player2";
+                            }
+                            else {
+                                console.log("Player is not in this lobby");
+                                return;
+                            }
 
-            toggleElement(data.playerSlot, data.playerAction.defend)
-            toggleElement(enemySlot, data.playerAction.attack1)
-            toggleElement(enemySlot, data.playerAction.attack2)
-
-            let returnObj = {
-                "player": game[data.playerSlot],
-                "enemy": game[enemySlot]
-            };
-            socket.emit("gameUpdate", returnObj)
+                            // store player action in db
+                            db.run(`UPDATE l set l.${playerSlot}=? from lobbies l WHERE l.lobby_id=?`, [JSON.stringify(action), data.auth.lobby_id], (err) => {
+                                if (err) {
+                                    console.error(err);
+                                    return;
+                                }
+                                else {
+                                    // if both player1 and player2 have submitted actions, update the game state
+                                    db.all("SELECT player1, player2 FROM lobbies WHERE lobby_id = ?", [data.auth.lobby_id], (err, rows) => {
+                                        if (err) {
+                                            console.error(err);
+                                            return;
+                                        }
+                                        else if(rows.length>0){
+                                            if(rows[0].player1 && rows[0].player2) {
+                                                updateGameState(socket, data.auth.lobby_id);
+                                            }
+                                        }
+                                    })
+                                }
+                            }
+                        }
+                    })
+                }
+            })
         }
         catch(e) {
             console.log(e.message)

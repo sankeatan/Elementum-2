@@ -9,9 +9,8 @@ function getRowText(data: shared.LobbyInfo) {
     }
 
     let str =
-        `${data.lobby_name.padEnd(28)}`+
-        `${`${data.players}/2 (${data.spectators})`.padEnd(24)}`+
-        `${`${data.ping}`.padStart(6)}`
+        `${data.lobby_name.padEnd(28)}` +
+        `${`${data.players}/2 (${data.spectators})`.padStart(28)}`
 
     return str;
 }
@@ -99,15 +98,11 @@ export class LobbyBrowserWindow {
             .text(10-this.width/2, 8-this.height/2, "lobby name")
 
         const header_text_players = scene.add
-            .text(0-80, 8-this.height/2, "players (spectators)")
-
-        const header_text_ping = scene.add
-            .text(this.width/2 - 65, 8-this.height/2, "ping")
+            .text(0+85, 8-this.height/2, "players (spectators)")
 
         this.header.add(header_bg)
         this.header.add(header_text_lobby)
         this.header.add(header_text_players)
-        this.header.add(header_text_ping)
         this.container.add(this.header)
 
         this.scrollbar = scene.add

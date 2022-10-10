@@ -19,10 +19,10 @@ namespace shared {
   }
 
   export interface LobbyInfo {
+    lobby_id: number,
     lobby_name: string,
     players: number,
     spectators: number,
-    ping: number
   }
 
   export interface Token {

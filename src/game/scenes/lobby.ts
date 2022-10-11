@@ -21,7 +21,6 @@ class ElementumLobby extends ElementumSceneBase {
     };
 
     lobby_id!: number;
-    player_specifier!: string;
     player_id!: number;
 
     constructor(socket?: Socket) {
@@ -59,6 +58,8 @@ class ElementumLobby extends ElementumSceneBase {
                     obj?.setFillStyle(color);
                 }
             }
+
+            // TODO: reset the cards
         })
     }
 
